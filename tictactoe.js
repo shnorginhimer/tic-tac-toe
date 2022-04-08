@@ -75,6 +75,14 @@ function checkWin(player) {
   if (sum == 3 * player) return true;
 }
 
+function calcSum(row, rowDelta, col, colDelta) {
+  console.log("row", "col");
+  let sum = 0;
+  for (let i = 0; i < 3; i++) {
+    console.log(row + rowDelta * i, col + colDelta * i)
+  }
+}
+
 printBoard(board);
 move(3, 1, -1);
 move(2, 3, 1);
@@ -83,3 +91,6 @@ move(1, 3, 1);
 move(3, 3, -1);
 move(1, 2, 1); // TODO noone should be able to move after someone has won
 printBoard(board);
+
+calcSum(0, 1, 1, 0);
+calcSum(0, 1, 2, -1);
