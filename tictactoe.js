@@ -47,50 +47,54 @@ function move(row, col, player) {
 function checkWin(player) {
   console.log(`checking if ${player} has won...`);
   // checking colunms
-  for (let c = 0; c < 3; c++) {
-    let sum = 0;
-    for (let r = 0; r < 3; r++) {
-      sum += board[r][c];
-    }
-    if (sum == 3 * player) return true;
-  }
+  for (let c = 0; c < 3; c++)
+    if (calcSum(0, 1, c, 0) == 3 * player) return true;
+
   // checking rows
-  for (let r = 0; r < 3; r++) {
-    let sum = 0;
-    for (let c = 0; c < 3; c++) {
-      sum += board[r][c];
-    }
-    if (sum == 3 * player) return true;
-  }
+  for (let r = 0; r < 3; r++)
+    if (calcSum(r, 0, 0, 1) == 3 * player) return true;
+
   //checking diagonals
-  let sum = 0;
-  for (let rc = 0; rc < 3; rc++) {
-    sum += board[rc][rc];
-  }
-  if (sum == 3 * player) return true;
-  sum = 0;
-  for (let rc = 0; rc < 3; rc++) {
-    sum += board[rc][2 - rc];
-  }
-  if (sum == 3 * player) return true;
+  if (calcSum(0, 1, 0, 1) == 3 * player) return true;
+  if (calcSum(0, 1, 2, -1) == 3 * player) return true;
 }
 
 function calcSum(row, rowDelta, col, colDelta) {
-  console.log("row", "col");
+  //console.log("row", "col");
   let sum = 0;
   for (let i = 0; i < 3; i++) {
-    console.log(row + rowDelta * i, col + colDelta * i)
+    // console.log(row + rowDelta * i, col + colDelta * i);
+    sum += board[row + rowDelta * i][col + colDelta * i];
   }
+  return sum;
 }
 
 printBoard(board);
-move(3, 1, -1);
+
+// TODO change all these into tests that can all run without editing
+/*move(3, 1, -1);
 move(2, 3, 1);
 move(3, 2, -1);
 move(1, 3, 1);
-move(3, 3, -1);
-move(1, 2, 1); // TODO noone should be able to move after someone has won
-printBoard(board);
+move(3, 3, -1);*/
 
-calcSum(0, 1, 1, 0);
-calcSum(0, 1, 2, -1);
+/*move(1, 1, -1);
+move(2, 3, 1);
+move(1, 2, -1);
+move(2, 2, 1);
+move(1, 3, -1);*/
+
+/*move(2, 1, -1);
+move(1, 3, 1);
+move(2, 2, -1);
+move(1, 2, 1);
+move(2, 3, -1);*/
+
+move(1, 3, -1);
+move(2, 3, 1);
+move(2, 2, -1);
+move(1, 2, 1);
+move(3, 1, -1);
+
+move(1, 2, 1); // TODO none should be able to move after someone has won
+printBoard(board);
