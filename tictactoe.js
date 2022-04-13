@@ -51,7 +51,7 @@ function move(row, col, player) {
 
 // checking if someone has won
 function checkWin(player) {
-  console.log(`checking if player "${players[player + 1]}" has won...`);
+  //console.log(`checking if player "${players[player + 1]}" has won...`);
   // checking colunms
   for (let c = 0; c < 3; c++)
     if (calcSum(0, 1, c, 0) == 3 * player) return true;
