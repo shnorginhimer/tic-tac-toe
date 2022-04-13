@@ -18,12 +18,12 @@ let lastPlayer = 0;
  * prints board to console
  * @param {*} b
  */
-function printBoard(b) {
-  console.log(b[0].map((p) => players[p + 1]).join(" | "));
+function printBoard() {
+  console.log(board[0].map((p) => players[p + 1]).join(" | "));
   console.log("---------");
-  console.log(b[1].map((p) => players[p + 1]).join(" | "));
+  console.log(board[1].map((p) => players[p + 1]).join(" | "));
   console.log("---------");
-  console.log(b[2].map((p) => players[p + 1]).join(" | "));
+  console.log(board[2].map((p) => players[p + 1]).join(" | "));
   console.log(" ");
 }
 
@@ -76,36 +76,9 @@ function calcSum(row, rowDelta, col, colDelta) {
   return sum;
 }
 
-setBoard([1, 1, 1], [0, 0, 0], [0, 0, 0]);
-printBoard(board);
-console.assert(checkWin(1));
-
-// TODO sandy change all these into tests that can all run without editing
-/*move(3, 1, -1);
-move(2, 3, 1);
-move(3, 2, -1);
-move(1, 3, 1);
-move(3, 3, -1);*/
-
-/*move(1, 1, -1);
-move(2, 3, 1);
-move(1, 2, -1);
-move(2, 2, 1);
-move(1, 3, -1);*/
-
-/*move(2, 1, -1);
-move(1, 3, 1);
-move(2, 2, -1);
-move(1, 2, 1);
-move(2, 3, -1);*/
-
-setBoard([0, 1, -1], [0, -1, 1], [-1, 0, 0]);
-console.assert(checkWin(-1));
-//move(1, 3, -1);
-/*move(2, 3, 1);
-move(2, 2, -1);
-move(1, 2, 1);
-move(3, 1, -1);*/
-
-//move(1, 2, 1); // TODO none should be able to move after someone has won
-printBoard(board);
+module.exports = {
+  printBoard: printBoard,
+  setBoard: setBoard,
+  move: move,
+  checkWin: checkWin
+}
