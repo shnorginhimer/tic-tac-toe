@@ -5,6 +5,12 @@ const board = [
   [0, 0, 0],
 ];
 
+function setBoard(r1, r2, r3) {
+  board[0] = r1;
+  board[1] = r2;
+  board[2] = r3;
+}
+
 const players = ["O", " ", "X"];
 let lastPlayer = 0;
 
@@ -22,7 +28,7 @@ function printBoard(b) {
 }
 
 /**
- *
+ * applies a  move to the board after checking it is valid
  * @param {*} row
  * @param {*} col
  * @param {*} player
@@ -45,7 +51,7 @@ function move(row, col, player) {
 
 // checking if someone has won
 function checkWin(player) {
-  console.log(`checking if ${player} has won...`);
+  console.log(`checking if player "${players[player + 1]}" has won...`);
   // checking colunms
   for (let c = 0; c < 3; c++)
     if (calcSum(0, 1, c, 0) == 3 * player) return true;
@@ -57,6 +63,7 @@ function checkWin(player) {
   //checking diagonals
   if (calcSum(0, 1, 0, 1) == 3 * player) return true;
   if (calcSum(0, 1, 2, -1) == 3 * player) return true;
+  return false;
 }
 
 function calcSum(row, rowDelta, col, colDelta) {
@@ -69,9 +76,11 @@ function calcSum(row, rowDelta, col, colDelta) {
   return sum;
 }
 
+setBoard([1, 1, 1], [0, 0, 0], [0, 0, 0]);
 printBoard(board);
+console.assert(checkWin(1));
 
-// TODO change all these into tests that can all run without editing
+// TODO sandy change all these into tests that can all run without editing
 /*move(3, 1, -1);
 move(2, 3, 1);
 move(3, 2, -1);
@@ -90,11 +99,13 @@ move(2, 2, -1);
 move(1, 2, 1);
 move(2, 3, -1);*/
 
-move(1, 3, -1);
-move(2, 3, 1);
+setBoard([0, 1, -1], [0, -1, 1], [-1, 0, 0]);
+console.assert(checkWin(-1));
+//move(1, 3, -1);
+/*move(2, 3, 1);
 move(2, 2, -1);
 move(1, 2, 1);
-move(3, 1, -1);
+move(3, 1, -1);*/
 
-move(1, 2, 1); // TODO none should be able to move after someone has won
+//move(1, 2, 1); // TODO none should be able to move after someone has won
 printBoard(board);
