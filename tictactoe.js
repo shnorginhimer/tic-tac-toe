@@ -28,6 +28,44 @@ function printBoard() {
 }
 
 /**
+ * prints board to console
+ * @param {*} b
+ */
+function htmlBoard() {
+  console.log(
+    '<html>\
+  <head>\
+    <title>tictactoe game</title>\
+  </head>\
+  <link rel="stylesheet" href="styles.css">\
+    </head>\
+    <h1>tictactoe game</h1>\
+    <table>'
+  );
+  console.log(
+    "<tr><td>" +
+      board[0].map((p) => players[p + 1]).join("</td><td>") +
+      "</td></tr>"
+  );
+  console.log(
+    "<tr><td>" +
+      board[1].map((p) => players[p + 1]).join("</td><td>") +
+      "</td></tr>"
+  );
+  console.log(
+    "<tr><td>" +
+      board[2].map((p) => players[p + 1]).join("</td><td>") +
+      "</td></tr>"
+  );
+  console.log(
+    '</table>\
+  <input type="restart" value="restart">\
+</body>\
+</html>'
+  );
+}
+
+/**
  * applies a  move to the board after checking it is valid
  * @param {*} row
  * @param {*} col
@@ -78,7 +116,8 @@ function calcSum(row, rowDelta, col, colDelta) {
 
 module.exports = {
   printBoard: printBoard,
+  htmlBoard: htmlBoard,
   setBoard: setBoard,
   move: move,
-  checkWin: checkWin
-}
+  checkWin: checkWin,
+};

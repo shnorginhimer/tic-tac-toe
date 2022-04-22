@@ -1,0 +1,14 @@
+table {
+  font-family: arial;
+  border-collapse: collapse;
+  width: 10%;
+}
+
+td,
+th {
+  border: 3px solid #7777ff;
+  font-size: 50px;
+  text-align: center;
+  padding: 5px;
+  background-color: #9999ff;
+}
