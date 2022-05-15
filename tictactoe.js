@@ -32,37 +32,44 @@ function printBoard() {
  * @param {*} b
  */
 function htmlBoard() {
-  console.log(
+  // Build up the board HTML table element
+  let tableContents = "";
+
+  // One row at a time
+  for (let row = 0; row < 3; row++) {
+    tableContents +=
+      ("\n<tr>" +
+        board[row].map( // for each (row,col) position generate the needed <td onclick="<function>"">X or O</td>
+          (currPlayer, col) => `<td onclick="${makeMoveCall(row, col, currPlayer)
+            }">${players[currPlayer + 1]}</td>`
+        ).join(" ") +
+        "</tr>");
+  }
+
+  let generatedHtml =
     '<html>\
   <head>\
     <title>tictactoe game</title>\
-  </head>\
-  <link rel="stylesheet" href="styles.css">\
+  <link rel="stylesheet" href="styles.css" />\
+  <script type="text/javascript" src="ui.js"></script>\
     </head>\
+    <body>\
     <h1>tictactoe game</h1>\
     <table>'
-  );
-  console.log(
-    "<tr><td>" +
-      board[0].map((p) => players[p + 1]).join("</td><td>") +
-      "</td></tr>"
-  );
-  console.log(
-    "<tr><td>" +
-      board[1].map((p) => players[p + 1]).join("</td><td>") +
-      "</td></tr>"
-  );
-  console.log(
-    "<tr><td>" +
-      board[2].map((p) => players[p + 1]).join("</td><td>") +
-      "</td></tr>"
-  );
-  console.log(
-    '</table>\
+    + tableContents +
+    '\n</table>\
   <input type="restart" value="restart">\
 </body>\
-</html>'
-  );
+</html>';
+  return generatedHtml;
+}
+
+function makeMoveCall(row, col, currentPlayer) {
+  if (currentPlayer == 0) {
+    return `clicked(${row + 1}, ${col + 1})`;
+  } else {
+    return "alert('already taken')";
+  }
 }
 
 /**
