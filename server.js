@@ -1,14 +1,17 @@
 const {
     printBoard,
     setBoard,
-    move,
+    userMove,
     checkWin,
     htmlBoard,
+    htmlPage,
 } = require("./tictactoe");
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+
+console.log("Initializing application...");
 
 const app = express();
 app.use(bodyParser.json())
@@ -17,7 +20,7 @@ const port = 80;
 app.get('/', function (req, res) {
     setBoard([0, 0, 0], [0, 0, 0], [0, 0, 0]);
     res.setHeader('content-type', 'text/html');
-    res.send(htmlBoard());
+    res.send(htmlPage());
     // res.sendFile(path.join(__dirname, "/ui.html"));
 });
 
@@ -37,11 +40,14 @@ app.get('/ui.js', function (req, res) {
 });*/
 
 app.post('/game/:gameId/moves', function (req, res) {
-    console.log(`received move ${JSON.stringify(body)} for game ${req.params.gameId}`);
-    console.log("headers:", JSON.stringify(req.headers));
+    console.log(`received move ${JSON.stringify(req.body)} for game ${req.params.gameId}`);
+    // console.log("headers:", JSON.stringify(req.headers));
 
-    // TODO make the move
-    // TODO return the new board
+    // make the move (and the system moves also)
+    userMove(req.body.row, req.body.col);
+
+    // return the new board
+    res.send(htmlBoard());
 });
 
 // Below not working yet...

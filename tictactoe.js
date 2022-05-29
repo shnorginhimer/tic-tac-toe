@@ -40,7 +40,7 @@ function printBoard() {
  */
 function htmlBoard() {
   // Build up the board HTML table element
-  let tableContents = "";
+  let tableContents = "<table>";
 
   // One row at a time
   // for each (row,col) position generate the needed <td onclick="<function>"">X or O</td>
@@ -49,7 +49,17 @@ function htmlBoard() {
       ("\n<tr>" + board[row].map((currPlayer, col) => `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]}</td>`).join(" ") +
         "</tr>");
   }
+  tableContents += "\n</table>";
 
+  return tableContents;
+}
+
+/**
+ * creates full HTML page for game
+ * @param {*} b
+ */
+function htmlPage() {
+  const tableContents = htmlBoard();
   let generatedHtml =
     '<html>\
   <head>\
@@ -59,10 +69,10 @@ function htmlBoard() {
     </head>\
     <body>\
     <h1>tictactoe game</h1>\
-    <table>'
+    <div id="board">'
     + tableContents +
-    '\n</table>\
-  <input type="restart" value="restart">\
+    '\n</div>\
+    <input type="restart" value="restart">\
 </body>\
 </html>';
   return generatedHtml;
@@ -84,9 +94,10 @@ function makeMoveCall(row, col, currentPlayer) {
  */
 function userMove(row, col) {
   move(row, col, USER);
+  console.log(`user moved to ${row}, ${col}`);
   const [aiRow, aiCol] = aiDecideMove();
   move(aiRow, aiCol, AI);
-  console.log(`user moved to ${row}, ${col}`);
+  console.log(`AI moved to ${aiRow}, ${aiCol}`);
 }
 
 /**
@@ -113,11 +124,12 @@ function aiDecideMove() {
  */
 function move(row, col, player) {
   if (player == lastPlayer) {
-    console.log("be patient!!!"); // TODO let's fix the error messages
+    console.error(`bad move: same player ${player} trying to move twice in a row`); // TODO let's fix the error messages
   } else if (player == 0) {
-    console.log("that's useless"); // TODO let's fix the error messages
+    console.error("bad move: player = 0"); // TODO let's fix the error messages
   } else if (board[row - 1][col - 1] != 0) {
-    console.log("nice try"); // TODO let's fix the error messages
+    console.error(`bad move: row=${row}, col=${col} already taken`); // TODO let's fix the error messages
+    printBoard();
   } else {
     // all good
     board[row - 1][col - 1] = player;
@@ -184,6 +196,7 @@ function calcSum(row, rowDelta, col, colDelta) {
 module.exports = {
   printBoard: printBoard,
   htmlBoard: htmlBoard,
+  htmlPage: htmlPage,
   setBoard: setBoard,
   move: move,
   userMove: userMove,
