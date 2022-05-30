@@ -72,7 +72,9 @@ function htmlPage() {
     <div id="board">'
     + tableContents +
     '\n</div>\
-    <input type="restart" value="restart">\
+    <form action="/">\
+    <input type="submit" value="Play Again">\
+    </form>\
 </body>\
 </html>';
   return generatedHtml;
