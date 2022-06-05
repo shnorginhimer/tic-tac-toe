@@ -5,15 +5,15 @@ const board = [
   [0, 0, 0],
 ];
 const players = ["O", " ", "X"];
-const USER = 1
+const USER = 1;
 const AI = -1;
 let lastPlayer = 0;
 
 /**
  * Setup the board to a specific starting position
- * @param {*} r1 
- * @param {*} r2 
- * @param {*} r3 
+ * @param {*} r1
+ * @param {*} r2
+ * @param {*} r3
  */
 function setBoard(r1, r2, r3) {
   board[0] = r1;
@@ -46,8 +46,16 @@ function htmlBoard() {
   // for each (row,col) position generate the needed <td onclick="<function>"">X or O</td>
   for (let row = 0; row < 3; row++) {
     tableContents +=
-      ("\n<tr>" + board[row].map((currPlayer, col) => `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]}</td>`).join(" ") +
-        "</tr>");
+      "\n<tr>" +
+      board[row]
+        .map(
+          (currPlayer, col) =>
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
+              players[currPlayer + 1]
+            }</td>`
+        )
+        .join(" ") +
+      "</tr>";
   }
   tableContents += "\n</table>";
 
@@ -69,8 +77,8 @@ function htmlPage() {
     </head>\
     <body>\
     <h1>tictactoe game</h1>\
-    <div id="board">'
-    + tableContents +
+    <div id="board">' +
+    tableContents +
     '\n</div>\
     <form action="/">\
     <input type="submit" value="Play Again">\
@@ -91,8 +99,8 @@ function makeMoveCall(row, col, currentPlayer) {
 /**
  * Accepts a move from the user and applies it
  * Then gets the AI to make a move in repsonse
- * @param {*} row 
- * @param {*} col 
+ * @param {*} row
+ * @param {*} col
  */
 function userMove(row, col) {
   move(row, col, USER);
@@ -104,7 +112,7 @@ function userMove(row, col) {
 
 /**
  * Figure out what move the AI should make
- * @returns 
+ * @returns
  */
 function aiDecideMove() {
   // Check if user about to win
@@ -112,8 +120,13 @@ function aiDecideMove() {
   if (neededMove) return neededMove;
 
   // If not make a random move
-  const row = Math.floor(Math.random() * 3) + 1;
-  const col = Math.floor(Math.random() * 3) + 1;
+  let row = 0;
+  let col = 0;
+  do {
+    row = Math.floor(Math.random() * 3) + 1;
+    col = Math.floor(Math.random() * 3) + 1;
+    console.log(`checking ${row}, ${col}...`);
+  } while (board[row - 1][col - 1] != 0);
   console.log(`AI moving to ${row}, ${col}`);
   return [row, col];
 }
@@ -126,7 +139,9 @@ function aiDecideMove() {
  */
 function move(row, col, player) {
   if (player == lastPlayer) {
-    console.error(`bad move: same player ${player} trying to move twice in a row`); // TODO let's fix the error messages
+    console.error(
+      `bad move: same player ${player} trying to move twice in a row`
+    ); // TODO let's fix the error messages
   } else if (player == 0) {
     console.error("bad move: player = 0"); // TODO let's fix the error messages
   } else if (board[row - 1][col - 1] != 0) {
@@ -161,28 +176,27 @@ function checkWin(player) {
 /**
  * Check if a player is about to win
  * Return the first location that will win so you can move there instead
- * @param {*} player 
- * @returns 
+ * @param {*} player
+ * @returns
  */
 function checkAboutToWin(player) {
   console.log(`checking if player "${players[player + 1]}" is about to win...`);
   // checking colunms
-  for (let c = 0; c < 3; c++)
-    if (calcSum(0, 1, c, 0) == 2 * player) {
-      for (let r = 0; r < 3; r++) {
-        if (board[r, c] == 0) return [r, c]
-      }
-      console.error("oops shouldn't get here");
-    }
+  for (let c = 0; c < 3; c++) {
+    const needToMove = checkSumLastZero(2 * player, 0, 1, c, 0);
+    if (needToMove) return needToMove;
+  }
 
   // checking rows
-  for (let r = 0; r < 3; r++)
-    if (calcSum(r, 0, 0, 1) == 2 * player) return [1, 1];
+  for (let r = 0; r < 3; r++) {
+    const needToMove = checkSumLastZero(2 * player, r, 0, 0, 1);
+    if (needToMove) return needToMove;
+  }
 
   //checking diagonals
   if (calcSum(0, 1, 0, 1) == 2 * player) return [1, 1];
   if (calcSum(0, 1, 2, -1) == 2 * player) return [1, 1];
-  return [3, 3];
+  return undefined;
 }
 
 function calcSum(row, rowDelta, col, colDelta) {
@@ -193,6 +207,26 @@ function calcSum(row, rowDelta, col, colDelta) {
     sum += board[row + rowDelta * i][col + colDelta * i];
   }
   return sum;
+}
+
+function checkSumLastZero(checkSum, row, rowDelta, col, colDelta) {
+  //console.log("row", "col");
+  let sum = 0;
+  let open = undefined;
+  for (let i = 0; i < 3; i++) {
+    const r = row + rowDelta * i;
+    const c = col + colDelta * i;
+    // console.log(row + rowDelta * i, col + colDelta * i);
+    sum += board[r][c];
+    if (board[r][c] == 0) open = [r + 1, c + 1]; // normalize to 1..3
+  }
+  if (sum == checkSum) {
+    // about to win -> return blocking move
+    console.log(`AI needs to move to ${JSON.stringify(open)}`);
+    return open;
+  } else {
+    return undefined;
+  }
 }
 
 module.exports = {
