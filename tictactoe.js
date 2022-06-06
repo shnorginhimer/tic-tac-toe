@@ -10,6 +10,29 @@ const USER = 1;
 const AI = -1;
 let lastPlayer = 0;
 
+// TODO use closures so don't have to ask for it each time
+function allPaths() {
+  const paths = [];
+  indexes.map(c => {
+    paths.push(indexes.reduce((m, r) => m.set([r, c], board[r][c]), new Map()))
+  })
+  indexes.map(r => {
+    paths.push(indexes.reduce((m, c) => m.set([r, c], board[r][c]), new Map()))
+  })
+  paths.push(indexes.reduce((m, rc) => m.set([rc, rc], board[rc][rc]), new Map()))
+  paths.push(indexes.reduce((m, r) => m.set([r, 2 - r], board[r][2 - r]), new Map()))
+  return paths;
+}
+
+function pathSum(path) {
+  return Array.from(path.values()).reduce((p, c) => p + c, 0);
+}
+
+function findEmpty(path) {
+  const empty = Array.from(path.keys()).map(k => (path.get(k) == 0) ? k : undefined).filter(loc => loc)[0];
+  return empty;
+}
+
 /**
  * Setup the board to a specific starting position
  * @param {*} r1
@@ -103,6 +126,7 @@ function makeMoveCall(row, col, currentPlayer) {
  * @param {*} col
  */
 function userMove(row, col) {
+  let p = allPaths();
   move(row, col, USER);
   console.log(`user moved to ${row}, ${col}`);
   const [aiRow, aiCol] = aiDecideMove();
@@ -116,16 +140,17 @@ function userMove(row, col) {
  */
 function aiDecideMove() {
   // Check if user about to win
-  const neededMove = checkAboutToWin(USER);
-  if (neededMove) return neededMove;
+  const neededMove = getMoveToBlockWin(USER);
+  if (neededMove.length > 0) return neededMove;
 
   // If not make a random move
+  console.log("selecting random move...")
   let row = 0;
   let col = 0;
   do {
     row = Math.floor(Math.random() * 3);
     col = Math.floor(Math.random() * 3);
-    console.log(`checking ${row}, ${col}...`);
+    console.log(`...checking ${row}, ${col}...`);
   } while (board[row][col] != 0);
   console.log(`AI moving to ${row}, ${col}`);
   return [row, col];
@@ -179,26 +204,35 @@ function checkWin(player) {
  * @param {*} player
  * @returns
  */
-function checkAboutToWin(player) {
+function getMoveToBlockWin(player) {
   console.log(`checking if player "${players[player + 1]}" is about to win...`);
+  let moveTo = [];
+  allPaths().forEach(path => {
+    if (pathSum(path) == 2 * player) {
+      moveTo = findEmpty(path);
+      console.log(`AI needs to move to ${JSON.stringify(moveTo)} to block win`);
+    }
+  })
+  return moveTo;
+
+  /* Don't need anymore
+ 
   // checking colunms
   for (let c = 0; c < 3; c++) {
     const needToMove = checkSumLastZero(2 * player, 0, 1, c, 0);
     if (needToMove) return needToMove;
   }
-  // This would be better as:
-  //indexes.forEach(c => { if (sumColumn(c) == 2 * player) return iterateColumn(c).findEmpty() })
-
+ 
   // checking rows
   for (let r = 0; r < 3; r++) {
     const needToMove = checkSumLastZero(2 * player, r, 0, 0, 1);
     if (needToMove) return needToMove;
   }
-
+ 
   //checking diagonals
   if (calcSum(0, 1, 0, 1) == 2 * player) return [1, 1];
   if (calcSum(0, 1, 2, -1) == 2 * player) return [1, 1];
-  return undefined;
+  */
 }
 
 function calcSum(row, rowDelta, col, colDelta) {
