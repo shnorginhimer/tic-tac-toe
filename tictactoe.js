@@ -4,6 +4,7 @@ const board = [
   [0, 0, 0],
   [0, 0, 0],
 ];
+const indexes = [0, 1, 2];
 const players = ["O", " ", "X"];
 const USER = 1;
 const AI = -1;
@@ -50,8 +51,7 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
-              players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +
@@ -90,7 +90,7 @@ function htmlPage() {
 
 function makeMoveCall(row, col, currentPlayer) {
   if (currentPlayer == 0) {
-    return `clicked(${row + 1}, ${col + 1})`;
+    return `clicked(${row}, ${col})`;
   } else {
     return "alert('already taken')";
   }
@@ -123,10 +123,10 @@ function aiDecideMove() {
   let row = 0;
   let col = 0;
   do {
-    row = Math.floor(Math.random() * 3) + 1;
-    col = Math.floor(Math.random() * 3) + 1;
+    row = Math.floor(Math.random() * 3);
+    col = Math.floor(Math.random() * 3);
     console.log(`checking ${row}, ${col}...`);
-  } while (board[row - 1][col - 1] != 0);
+  } while (board[row][col] != 0);
   console.log(`AI moving to ${row}, ${col}`);
   return [row, col];
 }
@@ -144,12 +144,12 @@ function move(row, col, player) {
     ); // TODO let's fix the error messages
   } else if (player == 0) {
     console.error("bad move: player = 0"); // TODO let's fix the error messages
-  } else if (board[row - 1][col - 1] != 0) {
+  } else if (board[row][col] != 0) {
     console.error(`bad move: row=${row}, col=${col} already taken`); // TODO let's fix the error messages
     printBoard();
   } else {
     // all good
-    board[row - 1][col - 1] = player;
+    board[row][col] = player;
     lastPlayer = player;
   }
   if (checkWin(player)) console.log(`Player ${players[player + 1]} wins`);
@@ -186,6 +186,8 @@ function checkAboutToWin(player) {
     const needToMove = checkSumLastZero(2 * player, 0, 1, c, 0);
     if (needToMove) return needToMove;
   }
+  // This would be better as:
+  //indexes.forEach(c => { if (sumColumn(c) == 2 * player) return iterateColumn(c).findEmpty() })
 
   // checking rows
   for (let r = 0; r < 3; r++) {
@@ -218,7 +220,7 @@ function checkSumLastZero(checkSum, row, rowDelta, col, colDelta) {
     const c = col + colDelta * i;
     // console.log(row + rowDelta * i, col + colDelta * i);
     sum += board[r][c];
-    if (board[r][c] == 0) open = [r + 1, c + 1]; // normalize to 1..3
+    if (board[r][c] == 0) open = [r, c];
   }
   if (sum == checkSum) {
     // about to win -> return blocking move

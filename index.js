@@ -9,7 +9,7 @@ const {
 
 setBoard([0, 1, 1], [0, 0, 0], [-1, 0, 0]);
 
-userMove(2, 2);
+userMove(1, 1);
 printBoard();
 console.log(htmlBoard());
 // console.assert(checkWin(-1));
