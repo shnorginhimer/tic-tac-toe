@@ -10,27 +10,18 @@ const USER = 1;
 const AI = -1;
 let lastPlayer = 0;
 
-// TODO use closures so don't have to ask for it each time
-function allPaths() {
-  const paths = [];
-  indexes.map(c => {
-    paths.push(indexes.reduce((m, r) => m.set([r, c], board[r][c]), new Map()))
-  })
-  indexes.map(r => {
-    paths.push(indexes.reduce((m, c) => m.set([r, c], board[r][c]), new Map()))
-  })
-  paths.push(indexes.reduce((m, rc) => m.set([rc, rc], board[rc][rc]), new Map()))
-  paths.push(indexes.reduce((m, r) => m.set([r, 2 - r], board[r][2 - r]), new Map()))
-  return paths;
-}
+const allPaths = [];
+indexes.map(c => allPaths.push([[0, c], [1, c], [2, c]]));
+indexes.map(r => allPaths.push([[r, 0], [r, 1], [r, 2]]));
+allPaths.push(indexes.map(i => [i, i]));
+allPaths.push(indexes.map(i => [i, 2 - i]));
 
 function pathSum(path) {
-  return Array.from(path.values()).reduce((p, c) => p + c, 0);
+  return path.reduce((s, loc) => s + board[loc[0]][loc[1]], 0);
 }
 
 function findEmpty(path) {
-  const empty = Array.from(path.keys()).map(k => (path.get(k) == 0) ? k : undefined).filter(loc => loc)[0];
-  return empty;
+  return path.map(loc => (board[loc[0]][loc[1]] == 0) ? loc : undefined).filter(loc => loc)[0];
 }
 
 /**
@@ -126,7 +117,6 @@ function makeMoveCall(row, col, currentPlayer) {
  * @param {*} col
  */
 function userMove(row, col) {
-  let p = allPaths();
   move(row, col, USER);
   console.log(`user moved to ${row}, ${col}`);
   const [aiRow, aiCol] = aiDecideMove();
@@ -207,7 +197,7 @@ function checkWin(player) {
 function getMoveToBlockWin(player) {
   console.log(`checking if player "${players[player + 1]}" is about to win...`);
   let moveTo = [];
-  allPaths().forEach(path => {
+  allPaths.forEach(path => {
     if (pathSum(path) == 2 * player) {
       moveTo = findEmpty(path);
       console.log(`AI needs to move to ${JSON.stringify(moveTo)} to block win`);
