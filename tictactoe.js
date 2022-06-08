@@ -8,21 +8,6 @@ const indexes = [0, 1, 2];
 const players = ["O", " ", "X"];
 const USER = 1;
 const AI = -1;
-let lastPlayer = 0;
-
-const allPaths = [];
-indexes.map(c => allPaths.push([[0, c], [1, c], [2, c]]));
-indexes.map(r => allPaths.push([[r, 0], [r, 1], [r, 2]]));
-allPaths.push(indexes.map(i => [i, i]));
-allPaths.push(indexes.map(i => [i, 2 - i]));
-
-function pathSum(path) {
-  return path.reduce((s, loc) => s + board[loc[0]][loc[1]], 0);
-}
-
-function findEmpty(path) {
-  return path.map(loc => (board[loc[0]][loc[1]] == 0) ? loc : undefined).filter(loc => loc)[0];
-}
 
 /**
  * Setup the board to a specific starting position
@@ -35,6 +20,29 @@ function setBoard(r1, r2, r3) {
   board[1] = r2;
   board[2] = r3;
 }
+
+// Noone played last (yet)
+let lastPlayer = 0;
+
+// allPaths contains a list of all possible paths for getting 3 in a row
+// A path is a list of 3 [r,c] values in an array
+const allPaths = [];
+indexes.map(c => allPaths.push([[0, c], [1, c], [2, c]]));
+indexes.map(r => allPaths.push([[r, 0], [r, 1], [r, 2]]));
+allPaths.push(indexes.map(i => [i, i]));
+allPaths.push(indexes.map(i => [i, 2 - i]));
+
+// calculate the sum of all board locations for one path
+function pathSum(path) {
+  return path.reduce((s, loc) => s + board[loc[0]][loc[1]], 0);
+}
+
+// find the first location in a path whose board position is empty (has 0 value)
+function findEmpty(path) {
+  return path.map(loc => (board[loc[0]][loc[1]] == 0) ? loc : undefined).filter(loc => loc)[0];
+}
+
+// ------------------ Functions that render the board to text or HTML -------------------
 
 /**
  * prints board to console
@@ -102,6 +110,7 @@ function htmlPage() {
   return generatedHtml;
 }
 
+// Helper function for generating function calls rendered into HTML for each board position
 function makeMoveCall(row, col, currentPlayer) {
   if (currentPlayer == 0) {
     return `clicked(${row}, ${col})`;
@@ -109,6 +118,8 @@ function makeMoveCall(row, col, currentPlayer) {
     return "alert('already taken')";
   }
 }
+
+// ---------------------- Functions for making moves and checking for winning etc -------------------
 
 /**
  * Accepts a move from the user and applies it
@@ -172,6 +183,7 @@ function move(row, col, player) {
 }
 
 // checking if someone has won
+// TODO simplify using paths
 function checkWin(player) {
   //console.log(`checking if player "${players[player + 1]}" has won...`);
   // checking colunms
@@ -225,6 +237,9 @@ function getMoveToBlockWin(player) {
   */
 }
 
+// ---------------------- TODO delete these functions soon ------------------------
+
+// TODO remove after converting functions above to using allPaths
 function calcSum(row, rowDelta, col, colDelta) {
   //console.log("row", "col");
   let sum = 0;
@@ -235,6 +250,7 @@ function calcSum(row, rowDelta, col, colDelta) {
   return sum;
 }
 
+// TODO remove after converting functions above to using allPaths
 function checkSumLastZero(checkSum, row, rowDelta, col, colDelta) {
   //console.log("row", "col");
   let sum = 0;
