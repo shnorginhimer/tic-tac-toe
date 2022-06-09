@@ -23,14 +23,26 @@ function setBoard(r1, r2, r3) {
 
 // Noone played last (yet)
 let lastPlayer = 0;
-
+let winner = 0;
 // allPaths contains a list of all possible paths for getting 3 in a row
 // A path is a list of 3 [r,c] values in an array
 const allPaths = [];
-indexes.map(c => allPaths.push([[0, c], [1, c], [2, c]]));
-indexes.map(r => allPaths.push([[r, 0], [r, 1], [r, 2]]));
-allPaths.push(indexes.map(i => [i, i]));
-allPaths.push(indexes.map(i => [i, 2 - i]));
+indexes.map((c) =>
+  allPaths.push([
+    [0, c],
+    [1, c],
+    [2, c],
+  ])
+);
+indexes.map((r) =>
+  allPaths.push([
+    [r, 0],
+    [r, 1],
+    [r, 2],
+  ])
+);
+allPaths.push(indexes.map((i) => [i, i]));
+allPaths.push(indexes.map((i) => [i, 2 - i]));
 
 // calculate the sum of all board locations for one path
 function pathSum(path) {
@@ -39,7 +51,9 @@ function pathSum(path) {
 
 // find the first location in a path whose board position is empty (has 0 value)
 function findEmpty(path) {
-  return path.map(loc => (board[loc[0]][loc[1]] == 0) ? loc : undefined).filter(loc => loc)[0];
+  return path
+    .map((loc) => (board[loc[0]][loc[1]] == 0 ? loc : undefined))
+    .filter((loc) => loc)[0];
 }
 
 // ------------------ Functions that render the board to text or HTML -------------------
@@ -64,6 +78,9 @@ function printBoard() {
 function htmlBoard() {
   // Build up the board HTML table element
   let tableContents = "<table>";
+  if (winner != 0) {
+    tableContents = `Player ${players[winner + 1]} wins` + tableContents;
+  }
 
   // One row at a time
   // for each (row,col) position generate the needed <td onclick="<function>"">X or O</td>
@@ -73,7 +90,8 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
+              players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +
@@ -112,6 +130,7 @@ function htmlPage() {
 
 // Helper function for generating function calls rendered into HTML for each board position
 function makeMoveCall(row, col, currentPlayer) {
+  if (winner) return "alert('GaMe OvEr')";
   if (currentPlayer == 0) {
     return `clicked(${row}, ${col})`;
   } else {
@@ -130,6 +149,7 @@ function makeMoveCall(row, col, currentPlayer) {
 function userMove(row, col) {
   move(row, col, USER);
   console.log(`user moved to ${row}, ${col}`);
+  if (winner == USER) return;
   const [aiRow, aiCol] = aiDecideMove();
   move(aiRow, aiCol, AI);
   console.log(`AI moved to ${aiRow}, ${aiCol}`);
@@ -145,7 +165,7 @@ function aiDecideMove() {
   if (neededMove.length > 0) return neededMove;
 
   // If not make a random move
-  console.log("selecting random move...")
+  console.log("selecting random move...");
   let row = 0;
   let col = 0;
   do {
@@ -188,15 +208,25 @@ function checkWin(player) {
   //console.log(`checking if player "${players[player + 1]}" has won...`);
   // checking colunms
   for (let c = 0; c < 3; c++)
-    if (calcSum(0, 1, c, 0) == 3 * player) return true;
-
+    if (calcSum(0, 1, c, 0) == 3 * player) {
+      winner = player;
+      return true;
+    }
   // checking rows
   for (let r = 0; r < 3; r++)
-    if (calcSum(r, 0, 0, 1) == 3 * player) return true;
-
+    if (calcSum(r, 0, 0, 1) == 3 * player) {
+      winner = player;
+      return true;
+    }
   //checking diagonals
-  if (calcSum(0, 1, 0, 1) == 3 * player) return true;
-  if (calcSum(0, 1, 2, -1) == 3 * player) return true;
+  if (calcSum(0, 1, 0, 1) == 3 * player) {
+    winner = player;
+    return true;
+  }
+  if (calcSum(0, 1, 2, -1) == 3 * player) {
+    winner = player;
+    return true;
+  }
   return false;
 }
 
@@ -209,12 +239,12 @@ function checkWin(player) {
 function getMoveToBlockWin(player) {
   console.log(`checking if player "${players[player + 1]}" is about to win...`);
   let moveTo = [];
-  allPaths.forEach(path => {
+  allPaths.forEach((path) => {
     if (pathSum(path) == 2 * player) {
       moveTo = findEmpty(path);
       console.log(`AI needs to move to ${JSON.stringify(moveTo)} to block win`);
     }
-  })
+  });
   return moveTo;
 
   /* Don't need anymore
