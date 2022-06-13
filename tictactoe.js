@@ -1,13 +1,27 @@
+// These never need to change
+// Note statements not in a function are run ONLY when code is first loaded
+
+const indexes = [0, 1, 2];
+const players = ["O", " ", "X"];
+const USER = 1;
+const AI = -1;
+
+// --------------- These should be reset at the start of each game ----------------
+// TODO Aaron how can we put these in a function that we call at the start of each game
+// instead of just running once when the code is loaded?
+
+// Noone played last (yet)
+let lastPlayer = 0; // last player to have made a move
+let winner = 0; // winner of a game
+
 // tic tac toe = 1,-1 are players 0 is emity
 const board = [
   [0, 0, 0],
   [0, 0, 0],
   [0, 0, 0],
 ];
-const indexes = [0, 1, 2];
-const players = ["O", " ", "X"];
-const USER = 1;
-const AI = -1;
+
+// ---------------------- functions that work with the board -----------------------
 
 /**
  * Setup the board to a specific starting position
@@ -21,9 +35,6 @@ function setBoard(r1, r2, r3) {
   board[2] = r3;
 }
 
-// Noone played last (yet)
-let lastPlayer = 0;
-let winner = 0;
 // allPaths contains a list of all possible paths for getting 3 in a row
 // A path is a list of 3 [r,c] values in an array
 const allPaths = [];
@@ -90,8 +101,7 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
-              players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +
