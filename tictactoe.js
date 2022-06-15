@@ -6,9 +6,8 @@ const players = ["O", " ", "X"];
 const USER = 1;
 const AI = -1;
 
-// --------------- These should be reset at the start of each game ----------------
-// TODO Aaron how can we put these in a function that we call at the start of each game
-// instead of just running once when the code is loaded?
+// Variables that are per game
+// Currently only one game at a time can be active
 let winner;
 let lastPlayer;
 let board;
@@ -109,8 +108,7 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
-              players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +

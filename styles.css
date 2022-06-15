@@ -4,6 +4,8 @@ table {
   width: 10%;
 }
 
+/* TODO Aaron this is where changes are needed to have table cells (td) have the right shape even when
+   no content (spaces not X or O) are in them */
 td,
 th {
   border: 3px solid #7777ff;
@@ -12,3 +14,8 @@ th {
   padding: 5px;
   background-color: #9999ff;
 }
+
+/* TODO Aaron you could also read about absolute positioning and layering in CSS
+   - https://www.geeksforgeeks.org/how-to-stack-elements-in-css/
+   - https://www.tutorialspoint.com/css/css_layers.htm 
+   This should also help you position the "you won" message right on over and on top of the whole board */
