@@ -5,6 +5,7 @@ const {
   checkWin,
   htmlBoard,
   htmlPage,
+  startGame,
 } = require("./tictactoe");
 
 const express = require("express");
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 const port = 80;
 
 app.get("/", function (req, res) {
-  setBoard([0, 0, 0], [0, 0, 0], [0, 0, 0]);
+  startGame();
   res.setHeader("content-type", "text/html");
   res.send(htmlPage());
   console.log("get / -> empty board");

@@ -9,17 +9,22 @@ const AI = -1;
 // --------------- These should be reset at the start of each game ----------------
 // TODO Aaron how can we put these in a function that we call at the start of each game
 // instead of just running once when the code is loaded?
+let winner;
+let lastPlayer;
+let board;
+let numMoves;
 
-// Noone played last (yet)
-let lastPlayer = 0; // last player to have made a move
-let winner = 0; // winner of a game
-
-// tic tac toe = 1,-1 are players 0 is emity
-const board = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-];
+function startGame() {
+  lastPlayer = 0; // Noone played last (yet), last player to have made a move
+  winner = 0; // winner of a game
+  board = [
+    // tic tac toe = 1,-1 are players 0 is emity
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  numMoves = 0;
+}
 
 // ---------------------- functions that work with the board -----------------------
 
@@ -66,6 +71,9 @@ function findEmpty(path) {
     .map((loc) => (board[loc[0]][loc[1]] == 0 ? loc : undefined))
     .filter((loc) => loc)[0];
 }
+function isBoardFull() {
+  return numMoves == 9;
+}
 
 // ------------------ Functions that render the board to text or HTML -------------------
 
@@ -101,7 +109,8 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
+              players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +
@@ -159,7 +168,8 @@ function makeMoveCall(row, col, currentPlayer) {
 function userMove(row, col) {
   move(row, col, USER);
   console.log(`user moved to ${row}, ${col}`);
-  if (winner == USER) return;
+  if (winner == USER || isBoardFull()) return;
+
   const [aiRow, aiCol] = aiDecideMove();
   move(aiRow, aiCol, AI);
   console.log(`AI moved to ${aiRow}, ${aiCol}`);
@@ -171,6 +181,7 @@ function userMove(row, col) {
  */
 function aiDecideMove() {
   // Check if user about to win
+
   const neededMove = getMoveToBlockWin(USER);
   if (neededMove.length > 0) return neededMove;
 
@@ -207,6 +218,7 @@ function move(row, col, player) {
     // all good
     board[row][col] = player;
     lastPlayer = player;
+    numMoves++;
   }
   if (checkWin(player)) console.log(`Player ${players[player + 1]} wins`);
   // TODO lets stop anyone from playing further if someone has won
@@ -319,4 +331,5 @@ module.exports = {
   move: move,
   userMove: userMove,
   checkWin: checkWin,
+  startGame: startGame,
 };
