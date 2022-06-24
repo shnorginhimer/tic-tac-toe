@@ -5,6 +5,7 @@ const indexes = [0, 1, 2];
 const players = ["O", " ", "X"];
 const USER = 1;
 const AI = -1;
+const MIDDLE = 1;
 
 // Variables that are per game
 // Currently only one game at a time can be active
@@ -12,8 +13,10 @@ let winner;
 let lastPlayer;
 let board;
 let numMoves;
+let isFirstMove;
 
 function startGame() {
+  isFirstMove = true;
   lastPlayer = 0; // Noone played last (yet), last player to have made a move
   winner = 0; // winner of a game
   board = [
@@ -108,7 +111,8 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
+              players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +
@@ -163,6 +167,7 @@ function makeMoveCall(row, col, currentPlayer) {
  * @param {*} row
  * @param {*} col
  */
+
 function userMove(row, col) {
   move(row, col, USER);
   console.log(`user moved to ${row}, ${col}`);
@@ -177,7 +182,18 @@ function userMove(row, col) {
  * Figure out what move the AI should make
  * @returns
  */
+
 function aiDecideMove() {
+  // dont lose right at start
+  if (isFirstMove) {
+    isFirstMove = false;
+    if (USER == board[MIDDLE][MIDDLE]) {
+      return [0, 0];
+    } else {
+      return [MIDDLE, MIDDLE];
+    }
+  }
+
   // Check if user about to win
 
   const neededMove = getMoveToBlockWin(USER);
@@ -195,7 +211,6 @@ function aiDecideMove() {
   console.log(`AI moving to ${row}, ${col}`);
   return [row, col];
 }
-
 /**
  * applies a  move to the board after checking it is valid
  * @param {*} row
