@@ -1,15 +1,15 @@
 const {
   printBoard,
-  setBoard,
-  move,
-  checkWin,
-  htmlBoard,
-  userMove
+  userMove,
+  startGame,
+  findWinningMove
 } = require("./tictactoe");
 
-setBoard([0, 1, 1], [0, 0, 0], [-1, 0, 0]);
+startGame();
 
 userMove(1, 1);
+userMove(2, 2);
 printBoard();
-console.log(htmlBoard());
-// console.assert(checkWin(-1));
+
+console.log(findWinningMove(1)); // should return [0,2] or [2,0]
+

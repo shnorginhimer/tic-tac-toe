@@ -111,8 +111,7 @@ function htmlBoard() {
       board[row]
         .map(
           (currPlayer, col) =>
-            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${
-              players[currPlayer + 1]
+            `<td onclick="${makeMoveCall(row, col, currPlayer)}">${players[currPlayer + 1]
             }</td>`
         )
         .join(" ") +
@@ -281,25 +280,25 @@ function getMoveToBlockWin(player) {
     }
   });
   return moveTo;
+}
 
-  /* Don't need anymore
- 
-  // checking colunms
-  for (let c = 0; c < 3; c++) {
-    const needToMove = checkSumLastZero(2 * player, 0, 1, c, 0);
-    if (needToMove) return needToMove;
-  }
- 
-  // checking rows
-  for (let r = 0; r < 3; r++) {
-    const needToMove = checkSumLastZero(2 * player, r, 0, 0, 1);
-    if (needToMove) return needToMove;
-  }
- 
-  //checking diagonals
-  if (calcSum(0, 1, 0, 1) == 2 * player) return [1, 1];
-  if (calcSum(0, 1, 2, -1) == 2 * player) return [1, 1];
-  */
+/**
+ * A winning move is one that:
+ * 1) completes a three in a row
+ * 2) creates two unblocked 2 in a rows at once so it is impossible for the other player to block both.
+ * @param {*} player - the player to check for a winning move
+ * @returns [row,col] of winning move if one exists
+ */
+function findWinningMove(player) {
+  // TODO Aaron write this function to return winning move
+
+  // Reuse getMoveToBlockWin with the other player to find if you can win right away
+
+  // If not immediate win look for a win in two moves
+  // First each path with just this player having one location taken
+  // Keep all the empty locations in an array
+  // If any new location found is already in the array it is a two move winner
+  return; // undefined 
 }
 
 // ---------------------- TODO delete these functions soon ------------------------
@@ -345,4 +344,5 @@ module.exports = {
   userMove: userMove,
   checkWin: checkWin,
   startGame: startGame,
+  findWinningMove: findWinningMove,
 };
